@@ -38,8 +38,9 @@ header.site{background:linear-gradient(118deg,var(--navy) 0%,var(--navy2) 46%,#0
 .hero-sub{font-size:clamp(16px,2.4vw,20px);font-weight:700;color:#cfe9ff;margin:0 0 10px}
 .lead{margin:0;max-width:56ch;color:#e6f1fb;font-size:14.5px}
 .ver-chip{display:inline-block;margin-top:12px;background:linear-gradient(120deg,#12a594,#5aa7e8);color:#fff;font-weight:800;font-size:12px;padding:3px 11px;border-radius:999px}
-.hero-img{justify-self:end;width:290px;max-width:100%}
+.hero-img{justify-self:end;width:290px;max-width:100%;position:relative}
 .hero-img img{width:100%;height:auto;display:block;-webkit-mask-image:radial-gradient(50% 50% at 50% 50%,#000 84%,transparent 99%);mask-image:radial-gradient(50% 50% at 50% 50%,#000 84%,transparent 99%)}
+.hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;-webkit-mask-image:radial-gradient(50% 50% at 50% 50%,#000 84%,transparent 99%);mask-image:radial-gradient(50% 50% at 50% 50%,#000 84%,transparent 99%)}
 .stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
 .stat{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.28);border-radius:12px;padding:8px 14px;min-width:92px;text-align:center}
 .stat b{display:block;font-size:20px;line-height:1.25}
@@ -119,7 +120,7 @@ footer{max-width:1080px;margin:0 auto;padding:0 16px 34px;color:var(--muted);fon
   .brand-row{justify-content:flex-start}
   .kv{grid-template-columns:88px 1fr}
 }
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.hero-video{display:none}}
 </style>
 </head>
 <body>
@@ -141,7 +142,10 @@ footer{max-width:1080px;margin:0 auto;padding:0 16px 34px;color:var(--muted);fon
       </div>
       <span class="ver-chip">デザイン ver.1（子猫）</span>
     </div>
-    <div class="hero-img"><img src="kodomori-kitten.webp" alt="見上げる子猫のイラスト"></div>
+    <div class="hero-img">
+      <img src="kodomori-kitten.webp" alt="見上げる子猫のイラスト">
+      <video class="hero-video" muted loop playsinline autoplay preload="auto" poster="kodomori-kitten.webp" data-src="kodomori-kitten-dance.mp4" aria-label="手を振って踊る子猫の動画"></video>
+    </div>
   </div>
 </header>
 <main>
@@ -436,6 +440,22 @@ document.getElementById("toggle-adopted").addEventListener("change", function(e)
 });
 renderList();
 if("serviceWorker" in navigator){ window.addEventListener("load", function(){ navigator.serviceWorker.register("sw.js").catch(function(){}); }); }
+})();
+</script>
+<script>
+(function(){
+  // ヒーロー動画：動きを減らす設定（prefers-reduced-motion）では読み込まず静止画のままにする。
+  // 読み込みに失敗した場合も動画を隠し、下の静止画イラストを表示する。
+  var hv = document.querySelector(".hero-video");
+  if(!hv) return;
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if(reduce){ hv.style.display = "none"; return; }
+  var s = document.createElement("source");
+  s.src = hv.getAttribute("data-src"); s.type = "video/mp4";
+  s.addEventListener("error", function(){ hv.style.display = "none"; });
+  hv.addEventListener("error", function(){ hv.style.display = "none"; });
+  hv.appendChild(s);
+  if(hv.play){ var p = hv.play(); if(p && p.catch) p.catch(function(){}); }
 })();
 </script>
 </body>
