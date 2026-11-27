@@ -1,4 +1,4 @@
-const CACHE = 'kodomori-static-v10';
+const CACHE = 'kodomori-static-v11';
 const STATIC_FILES = ['./icon-192.png', './icon-512.png', './manifest.json', './kodomori-kitten.webp', './kodomori-kitten-chibi.webp', './kodomori-kitten-dance.mp4', './kodomori-sky-bg.webp', './kodomori-sky-tile.webp', './kodomori-crest.png'];
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(STATIC_FILES)).then(() => self.skipWaiting()));
